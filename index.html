@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Escove o Gato 🐱</title>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+            user-select: none;
+        }
+
+        #topbar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+
+        .catBtn {
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            background: #444;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .catBtn:hover {
+            background: #666;
+        }
+
+        #game {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            cursor: none;
+        }
+
+        #gato {
+            position: absolute;
+            width: 300px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        #mao {
+            position: absolute;
+            width: 50px;
+            pointer-events: none;
+        }
+
+        .pelo {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ccc;
+            border-radius: 50%;
+            animation: cair 1s linear forwards;
+        }
+
+        @keyframes cair {
+            to {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #gameover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 40px;
+            z-index: 999;
+        }
+
+        #gameover div {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        #restart {
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #menu {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            cursor: default;
+        }
+
+        #menu h1 {
+            font-size: 40px;
+            padding: 0px;
+            margin-top: 0px;
+
+        }
+
+        #catSelect {
+            display: flex;
+            gap: 20px;
+        }
+
+        .catCard {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            width: 120px;
+            color: black;
+        }
+
+        .catCard:hover {
+            background: #ffeaea;
+        }
+
+        .catCard.selected {
+            border: 5px solid pink;
+        }
+
+        button,
+        .catCard {
+            cursor: pointer;
+        }
+
+        #menu button {
+            color: pink;
+            background-color: white;
+            border: none;
+            padding: 10px;
+            width: 180px;
+            font-size: 19px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- seleção de gatos -->
+    <div id="topbar">
+        <button class="catBtn" onclick="trocarGato('clarinha')">🐱 Clarinha</button>
+        <button class="catBtn" onclick="trocarGato('theo')">😼 Theo</button>
+        <button class="catBtn" onclick="trocarGato('francisco')">🐾 Francisco</button>
+    </div>
+
+    <div id="menu">
+        <img src="imgs/lalacGato.png" alt="">
+        <h1>Escove o Gato</h1>
+
+        <div id="catSelect"></div>
+
+        <button id="playBtn">▶ Jogar</button>
+    </div>
+
+    <div id="game">
+        <div id="score">⭐ 0</div>
+
+        <img id="gato" draggable="false">
+        <img id="mao" src="/imgs/mao_aberta.png">
+    </div>
+
+    <div id="gameover">
+        GAME OVER 😾
+        <div id="finalScore"></div>
+        <div id="highScore"></div>
+        <button id="restart">Reiniciar</button>
+        <button id="menuBtn">Menu</button>
+    </div>
+
+    <script>
+        const gato = document.getElementById("gato");
+        const mao = document.getElementById("mao");
+        const scoreEl = document.getElementById("score");
+        const gameoverEl = document.getElementById("gameover");
+        const restartBtn = document.getElementById("restart");
+        const finalScoreEl = document.getElementById("finalScore");
+        const highScoreEl = document.getElementById("highScore");
+
+        /* 🐱 gatos com 3 estados */
+        const gatos = {
+            clarinha: {
+                costas: "imgs/gato_laranja_costas-removebg-preview.png",
+                virado: "imgs/gato_laranja_virado-removebg-preview.png",
+                bravo: "imgs/gato_laranja_bravo-removebg-preview.png",
+                icon: "🌸"
+            },
+            theo: {
+                costas: "imgs/gato_preto_costas-removebg-preview.png",
+                virado: "imgs/gato_preto_virado_-removebg-preview.png",
+                bravo: "imgs/gato_preto_bravo-removebg-preview.png",
+                icon: "😼"
+            },
+            francisco: {
+                costas: "imgs/gato_cinza_costas-removebg-preview.png",
+                virado: "imgs/gato_cinza_virado-removebg-preview.png",
+                bravo: "imgs/gato_cinza_bravo-removebg-preview.png",
+                icon: "🐾"
+            }
+        };
+
+        const menu = document.getElementById("menu");
+        const catSelect = document.getElementById("catSelect");
+        const playBtn = document.getElementById("playBtn");
+
+        let gatoSelecionado = "clarinha";
+        let gatoAtual = "clarinha";
+        let score, escovando, olhando, chance, acabou;
+        let ultimoPonto = 0;
+        const intervaloPontos = 80;
+
+
+
+        /* preload imagens */
+        function preloadImagens() {
+            Object.values(gatos).forEach(g => {
+                Object.values(g).forEach(src => {
+                    if (typeof src === "string") {
+                        const img = new Image();
+                        img.src = src;
+                    }
+                });
+            });
+        }
+
+        function criarMenu() {
+            catSelect.innerHTML = "";
+
+            Object.keys(gatos).forEach(nome => {
+                const card = document.createElement("div");
+                card.classList.add("catCard");
+
+                const recorde = localStorage.getItem(`recorde_${nome}`) || 0;
+
+                card.innerHTML = `
+            <h3>${gatos[nome].icon}</h3>
+            <p>${nome}</p>
+            <small>Recorde: ${recorde}</small>
+        `;
+
+                if (nome === gatoSelecionado) {
+                    card.classList.add("selected");
+                }
+
+                card.onclick = () => {
+                    gatoSelecionado = nome;
+                    criarMenu();
+                };
+
+                catSelect.appendChild(card);
+            });
+        }
+
+        playBtn.addEventListener("click", () => {
+            gatoAtual = gatoSelecionado;
+            menu.style.display = "none";
+            iniciarJogo();
+        });
+
+        const menuBtn = document.getElementById("menuBtn");
+
+        menuBtn.addEventListener("click", () => {
+            gameoverEl.style.display = "none";
+            menu.style.display = "flex";
+            criarMenu();
+        });
+
+        function trocarGato(nome) {
+            gatoAtual = nome;
+            resetJogo();
+        }
+
+        function resetJogo() {
+            score = 0;
+            escovando = false;
+            olhando = false;
+            chance = 0;
+            acabou = false;
+            ultimoPonto = 0;
+
+            gato.src = gatos[gatoAtual].costas;
+            scoreEl.textContent = `${gatos[gatoAtual].icon} 0`;
+            gameoverEl.style.display = "none";
+        }
+
+        function iniciarJogo() {
+            preloadImagens();
+            resetJogo();
+        }
+
+        preloadImagens();
+        criarMenu();
+        menu.style.display = "flex";
+
+        document.addEventListener("mousemove", (e) => {
+            mao.style.left = e.clientX + "px";
+            mao.style.top = e.clientY + "px";
+            mao.style.left = (e.clientX - 25) + "px";
+            mao.style.top = (e.clientY - 25) + "px";
+
+            if (acabou || !escovando) return;
+
+            const gatoRect = gato.getBoundingClientRect();
+
+            if (
+                e.clientX > gatoRect.left &&
+                e.clientX < gatoRect.right &&
+                e.clientY > gatoRect.top &&
+                e.clientY < gatoRect.bottom
+            ) {
+                const agora = Date.now();
+
+                if (agora - ultimoPonto > intervaloPontos) {
+                    score++;
+                    scoreEl.textContent = `${gatos[gatoAtual].icon} ${score}`;
+                    ultimoPonto = agora;
+
+                    criarPelo(e.clientX, e.clientY);
+                    chance += 0.002;
+
+                    if (!olhando && Math.random() < chance) {
+                        gatoOlha();
+                    }
+                }
+            }
+        });
+
+
+
+        document.addEventListener("mousedown", () => {
+            if (!acabou) escovando = true;
+        });
+
+        document.addEventListener("mouseup", () => {
+            escovando = false;
+        });
+
+        document.addEventListener("mousedown", () => {
+            if (!acabou) {
+                escovando = true;
+                mao.src = "imgs/mão_fechada.png";
+            }
+        });
+
+        document.addEventListener("mouseup", () => {
+            escovando = false;
+            mao.src = "imgs/mao_aberta.png";
+        });
+
+        function criarPelo(x, y) {
+            const pelo = document.createElement("div");
+            pelo.classList.add("pelo");
+            pelo.style.left = x + "px";
+            pelo.style.top = y + "px";
+
+            document.body.appendChild(pelo);
+            setTimeout(() => pelo.remove(), 1000);
+        }
+
+        function gatoOlha() {
+            olhando = true;
+            gato.src = gatos[gatoAtual].virado;
+
+            setTimeout(() => {
+                if (escovando) {
+                    gato.src = gatos[gatoAtual].bravo;
+                    gameOver();
+                } else {
+                    olhando = false;
+                    gato.src = gatos[gatoAtual].costas;
+                    chance *= 0.5;
+                }
+            }, 700);
+        }
+
+        function getRecordeKey() {
+            return `recorde_${gatoAtual}`;
+        }
+
+        function gameOver() {
+            acabou = true;
+            escovando = false;
+
+            let recorde = localStorage.getItem(getRecordeKey()) || 0;
+
+            if (score > recorde) {
+                recorde = score;
+                localStorage.setItem(getRecordeKey(), recorde);
+            }
+
+            finalScoreEl.textContent = `${gatos[gatoAtual].icon} Sua pontuação: ${score}`;
+            highScoreEl.textContent = `${gatos[gatoAtual].icon} Recorde: ${recorde}`;
+
+            gameoverEl.style.display = "flex";
+        }
+
+        restartBtn.addEventListener("click", iniciarJogo);
+    </script>
+
+</body>
+
+</html>
