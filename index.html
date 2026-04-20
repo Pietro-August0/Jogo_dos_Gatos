@@ -55,8 +55,10 @@
 
         #mao {
             position: absolute;
-            width: 50px;
+            width: 60px;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .pelo {
@@ -364,7 +366,24 @@
             }
         });
 
+        playBtn.addEventListener("click", () => {
+            gatoAtual = gatoSelecionado;
+            menu.style.display = "none";
+            iniciarJogo();
 
+            // pequeno delay pra ficar suave
+            setTimeout(() => {
+                mao.style.opacity = 1;
+            }, 100);
+        });
+
+        menuBtn.addEventListener("click", () => {
+            gameoverEl.style.display = "none";
+            menu.style.display = "flex";
+            criarMenu();
+
+            mao.style.opacity = 0;
+        });
 
         document.addEventListener("mousedown", () => {
             if (!acabou) escovando = true;
@@ -385,6 +404,25 @@
             escovando = false;
             mao.src = "imgs/mao_aberta.png";
         });
+
+        function gameOver() {
+            acabou = true;
+            escovando = false;
+
+            mao.style.opacity = 0;
+
+            let recorde = localStorage.getItem(getRecordeKey()) || 0;
+
+            if (score > recorde) {
+                recorde = score;
+                localStorage.setItem(getRecordeKey(), recorde);
+            }
+
+            finalScoreEl.textContent = `${gatos[gatoAtual].icon} Sua pontuação: ${score}`;
+            highScoreEl.textContent = `${gatos[gatoAtual].icon} Recorde: ${recorde}`;
+
+            gameoverEl.style.display = "flex";
+        }
 
         function criarPelo(x, y) {
             const pelo = document.createElement("div");
