@@ -173,12 +173,45 @@
             font-size: 19px;
             border-radius: 12px;
         }
+
+        .btn {
+            color: pink;
+            background-color: white;
+            border: none;
+            padding: 12px;
+            width: 180px;
+            font-size: 19px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #ffeaea;
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .gameoverCard {
+            background: #111;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- seleção de gatos -->
+
     <div id="topbar">
         <button class="catBtn" onclick="trocarGato('clarinha')">🐱 Clarinha</button>
         <button class="catBtn" onclick="trocarGato('theo')">😼 Theo</button>
@@ -202,13 +235,15 @@
     </div>
 
     <div id="gameover">
-        GAME OVER 😾
-        <div id="finalScore"></div>
-        <div id="highScore"></div>
-        <button id="restart">Reiniciar</button>
-        <button id="menuBtn">Menu</button>
-    </div>
+        <div class="gameoverCard">
+            <h1>GAME OVER 😾</h1>
+            <div id="finalScore"></div>
+            <div id="highScore"></div>
 
+            <button id="restart" class="btn">🔄 Reiniciar</button>
+            <button id="menuBtn" class="btn">🏠 Menu</button>
+        </div>
+    </div>
     <script>
         const gato = document.getElementById("gato");
         const mao = document.getElementById("mao");
@@ -218,7 +253,7 @@
         const finalScoreEl = document.getElementById("finalScore");
         const highScoreEl = document.getElementById("highScore");
 
-        /* 🐱 gatos com 3 estados */
+    
         const gatos = {
             clarinha: {
                 costas: "imgs/gato_laranja_costas-removebg-preview.png",
@@ -292,11 +327,6 @@
             });
         }
 
-        playBtn.addEventListener("click", () => {
-            gatoAtual = gatoSelecionado;
-            menu.style.display = "none";
-            iniciarJogo();
-        });
 
         const menuBtn = document.getElementById("menuBtn");
 
@@ -371,7 +401,7 @@
             menu.style.display = "none";
             iniciarJogo();
 
-            // pequeno delay pra ficar suave
+    
             setTimeout(() => {
                 mao.style.opacity = 1;
             }, 100);
@@ -396,7 +426,7 @@
         document.addEventListener("mousedown", () => {
             if (!acabou) {
                 escovando = true;
-                mao.src = "imgs/mão_fechada.png";
+                mao.src = "imgs/mao_fechada.png";
             }
         });
 
@@ -452,23 +482,6 @@
 
         function getRecordeKey() {
             return `recorde_${gatoAtual}`;
-        }
-
-        function gameOver() {
-            acabou = true;
-            escovando = false;
-
-            let recorde = localStorage.getItem(getRecordeKey()) || 0;
-
-            if (score > recorde) {
-                recorde = score;
-                localStorage.setItem(getRecordeKey(), recorde);
-            }
-
-            finalScoreEl.textContent = `${gatos[gatoAtual].icon} Sua pontuação: ${score}`;
-            highScoreEl.textContent = `${gatos[gatoAtual].icon} Recorde: ${recorde}`;
-
-            gameoverEl.style.display = "flex";
         }
 
         restartBtn.addEventListener("click", iniciarJogo);
