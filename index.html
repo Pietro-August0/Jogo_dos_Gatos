@@ -312,10 +312,9 @@
 
 
     <div id="topbar">
-        <button class="catBtn" onclick="trocarGato('clarinha')"><img src="imgs/clara_perfil.png" style="width: 30px;"
-                height="30px" alt=""> Clarinha</button>
-        <button class="catBtn" onclick="trocarGato('theo')">😼 Theo</button>
-        <button class="catBtn" onclick="trocarGato('francisco')">🐾 Francisco</button>
+        <button class="catBtn" onclick="trocarGato('clarinha')"><img src="imgs/clara_perfil.png" style="width: 30px;" height="30px"> Clarinha</button>
+        <button class="catBtn" onclick="trocarGato('theo')">🐈 Theo</button>
+        <button class="catBtn" onclick="trocarGato('francisco')"><img src="imgs/francisco_perfil.png" style="width: 30px;" height="30px"> Francisco</button>
     </div>
 
     <div id="menu">
@@ -375,7 +374,7 @@
                 costas: "imgs/gato_cinza_costas-removebg-preview.png",
                 virado: "imgs/gato_cinza_virado-removebg-preview.png",
                 bravo: "imgs/gato_cinza_bravo-removebg-preview.png",
-                icon: "🐾"
+                icon: "imgs/francisco_perfil.png"
             }
         };
 
@@ -546,7 +545,8 @@
                 localStorage.setItem(getRecordeKey(), recorde);
             }
 
-            finalScoreEl.textContent = `${gatos[gatoAtual].icon} Sua pontuação: ${score}`;
+            
+            finalScoreEl.innerHTML = `<img src="${gatos[gatoAtual].icon}" class="scoreIcon"> Sua pontuação: ${score}`;
             scoreEl.innerHTML = `<img src="${gatos[gatoAtual].icon}" class="scoreIcon"> Recorde: ${recorde}`;
 
             gameoverEl.style.display = "flex";
