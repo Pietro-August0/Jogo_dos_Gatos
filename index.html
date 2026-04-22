@@ -46,6 +46,14 @@
             cursor: none;
         }
 
+        #game {
+            transition: filter 0.3s;
+        }
+
+        #game.bravoBg {
+            filter: brightness(0.7) contrast(1.2);
+        }
+
         #gato {
             position: absolute;
             width: 300px;
@@ -272,6 +280,20 @@
             background: #666;
             transform: scale(1.1);
         }
+
+        #gato.bravoAnim {
+            animation: zoomBravo 0.6s ease forwards;
+        }
+
+        @keyframes zoomBravo {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+            }
+        }
     </style>
 </head>
 
@@ -301,7 +323,7 @@
         </div>
 
         <img id="gato" draggable="false">
-        <img id="mao" src="/imgs/mao_aberta.png">
+        <img id="mao" src="imgs/mao_aberta.png">
     </div>
 
     <div id="gameover">
@@ -397,6 +419,7 @@
             });
         }
 
+        document.getElementById("game").classList.add("bravoBg");
 
         const menuBtn = document.getElementById("menuBtn");
 
@@ -422,6 +445,9 @@
             gato.src = gatos[gatoAtual].costas;
             scoreEl.textContent = `${gatos[gatoAtual].icon} 0`;
             gameoverEl.style.display = "none";
+
+            mao.style.opacity = 1;
+            mao.src = "imgs/mao_aberta.png";
         }
 
         function iniciarJogo() {
@@ -434,8 +460,6 @@
         menu.style.display = "flex";
 
         document.addEventListener("mousemove", (e) => {
-            mao.style.left = e.clientX + "px";
-            mao.style.top = e.clientY + "px";
             mao.style.left = (e.clientX - 25) + "px";
             mao.style.top = (e.clientY - 25) + "px";
 
@@ -486,14 +510,6 @@
         });
 
         document.addEventListener("mousedown", () => {
-            if (!acabou) escovando = true;
-        });
-
-        document.addEventListener("mouseup", () => {
-            escovando = false;
-        });
-
-        document.addEventListener("mousedown", () => {
             if (!acabou) {
                 escovando = true;
                 mao.src = "imgs/mao_fechada.png";
@@ -541,7 +557,23 @@
             setTimeout(() => {
                 if (escovando) {
                     gato.src = gatos[gatoAtual].bravo;
-                    gameOver();
+
+                    // 🔥 trava o jogo
+                    acabou = true;
+                    escovando = false;
+
+                    // adiciona animação
+                    gato.classList.add("bravoAnim");
+
+                    // espera animação terminar
+                    setTimeout(() => {
+                        gameOver();
+
+                        // limpa animação pra próxima rodada
+                        gato.classList.remove("bravoAnim");
+                        gato.style.transform = "translate(-50%, -50%) scale(1)";
+                    }, 600);
+
                 } else {
                     olhando = false;
                     gato.src = gatos[gatoAtual].costas;
@@ -594,8 +626,21 @@
                 // escolhe um gif aleatório
                 img.src = gifs[Math.floor(Math.random() * gifs.length)];
 
-                img.style.left = Math.random() * 100 + "%";
-                img.style.top = Math.random() * 100 + "%";
+                let x, y;
+                do {
+                    x = Math.random() * 100;
+                    y = Math.random() * 100;
+                } while (
+                    x > 20 && x < 80 &&
+                    y > 20 && y < 80
+                );
+
+                img.style.left = x + "%";
+                img.style.top = y + "%";
+
+                /* extras visuais */
+                img.style.width = (50 + Math.random() * 40) + "px";
+                img.style.animationDuration = (2 + Math.random() * 3) + "s";
 
                 layer.appendChild(img);
             }
@@ -612,7 +657,11 @@
 
         spawnGatinhos();
 
-        restartBtn.addEventListener("click", iniciarJogo);
+        restartBtn.addEventListener("click", () => {
+            iniciarJogo();
+
+            mao.style.opacity = 1;
+        });
     </script>
 
 </body>
