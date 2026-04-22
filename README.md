@@ -47,12 +47,11 @@ O jogo é inspirado nos três gatinhos da minha namorada,
 
 a Clarinha, o Francisco e o Theo.
 
-Minha namorada se chama Laura e ela é apaixonada pelos gatos dela
+Minha namorada se chama Laura e ela é apaixonada pelos gatos dela.
 
 **Laura** =>
 
-
-<img src="imgs/lalacGato.png" alt="Descrição" width="500" height="500">
+<img src="imgs/lalacGato.png" alt="Descrição" width="500" height="700">
 
 ---
 
