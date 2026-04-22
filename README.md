@@ -27,7 +27,7 @@ Seu objetivo é fazer o máximo de pontos possível escovando o gato sem ser peg
 
 O jogo é inspirado em gatos reais 🥹
 
-- ![Clarinha](imgs/clara_perfil.png)  **Clarinha** — a caçula cheia de energia  
+- <img src="imgs/clara_perfil.png" alt="Descrição" width="30" height="30">  **Clarinha** — a caçula cheia de energia  
 - 🐾 **Francisco** — saideiro, não gosta de ficar parado em casa  
 - 😼 **Theo** — o mais gordinho e preguiçoso
 
