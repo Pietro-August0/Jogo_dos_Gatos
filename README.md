@@ -43,7 +43,10 @@ Esse jogo foi criado por mim,
 Ele não nasceu só como um exercício de programação,
 mas como um presente
 
-O jogo é inspirado nos três gatinhos da minha namorada, **Laura** —  
+O jogo é inspirado nos três gatinhos da minha namorada, 
+**Laura** —
+<img src="imgs/lalacGato.png" alt="Descrição" width="500" height="500">
+
 a Clarinha, o Francisco e o Theo.
 
 ---
