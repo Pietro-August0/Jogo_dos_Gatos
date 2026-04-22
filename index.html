@@ -31,10 +31,12 @@
             background: #444;
             color: white;
             border-radius: 8px;
+            border: 1px solid pink;
         }
 
         .catBtn:hover {
             background: #666;
+            transform: scale(1.1);
         }
 
         #game {
@@ -78,14 +80,13 @@
         }
 
         #score {
-            position: absolute;
             top: 10px;
-            right: 10px;
+            right: 5px;
             font-size: 24px;
             z-index: 5;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 2px;
         }
 
         #gameover {
@@ -152,11 +153,11 @@
         }
 
         .catCard:hover {
-            background: #ffeaea;
+            background: #fcf3f3;
         }
 
         .catCard.selected {
-            border: 5px solid pink;
+            border: 3px dotted pink;
         }
 
         button,
@@ -206,6 +207,71 @@
             align-items: center;
             gap: 15px;
         }
+
+        #gifsLayer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* fundo */
+            overflow: hidden;
+        }
+
+        #gifsLayer img {
+            position: absolute;
+            width: 70px;
+            opacity: 0.5;
+            pointer-events: none;
+            animation: flutuar 3s ease-in-out infinite;
+        }
+
+        /* conteúdo do menu na frente */
+        #menu>*:not(#gifsLayer) {
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes flutuar {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        #topUI {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 5;
+        }
+
+        /* botão menor */
+        .btn.small {
+            width: 45px;
+            padding: 8px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            background: #444;
+            color: white;
+            border-radius: 8px;
+            border: 1px solid pink;
+        }
+
+        .btn.small:hover {
+            background: #666;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
@@ -219,6 +285,7 @@
     </div>
 
     <div id="menu">
+        <div id="gifsLayer"></div>
         <img src="imgs/lalacGato.png" alt="">
         <h1>Escove o Gato</h1>
 
@@ -228,7 +295,10 @@
     </div>
 
     <div id="game">
-        <div id="score">⭐ 0</div>
+        <div id="topUI">
+            <div id="score">⭐ 0</div>
+            <button id="menuGameBtn" class="btn small">🏠</button>
+        </div>
 
         <img id="gato" draggable="false">
         <img id="mao" src="/imgs/mao_aberta.png">
@@ -253,7 +323,7 @@
         const finalScoreEl = document.getElementById("finalScore");
         const highScoreEl = document.getElementById("highScore");
 
-    
+
         const gatos = {
             clarinha: {
                 costas: "imgs/gato_laranja_costas-removebg-preview.png",
@@ -401,7 +471,7 @@
             menu.style.display = "none";
             iniciarJogo();
 
-    
+
             setTimeout(() => {
                 mao.style.opacity = 1;
             }, 100);
@@ -483,6 +553,64 @@
         function getRecordeKey() {
             return `recorde_${gatoAtual}`;
         }
+
+        const menuGameBtn = document.getElementById("menuGameBtn");
+
+        menuGameBtn.addEventListener("click", () => {
+            // para o jogo
+            acabou = true;
+            escovando = false;
+
+            // esconde mão
+            mao.style.opacity = 0;
+
+            // esconde game over se estiver aberto
+            gameoverEl.style.display = "none";
+
+            // mostra menu
+            menu.style.display = "flex";
+            criarMenu();
+        });
+
+        function spawnGatinhos() {
+            const layer = document.getElementById("gifsLayer");
+            layer.innerHTML = "";
+
+            const gifs = [
+                "imgs/gatogif1.gif",
+                "imgs/gatogif2.gif",
+                "imgs/gatogif3.gif",
+                "imgs/gatogif4.gif",
+                "imgs/gatogif5.gif",
+                "imgs/gatogif6.gif",
+                "imgs/gatogif7.gif",
+                "imgs/gatogif8.gif",
+                "imgs/gatogif9.gif"
+            ];
+
+            for (let i = 0; i < 10; i++) {
+                const img = document.createElement("img");
+
+                // escolhe um gif aleatório
+                img.src = gifs[Math.floor(Math.random() * gifs.length)];
+
+                img.style.left = Math.random() * 100 + "%";
+                img.style.top = Math.random() * 100 + "%";
+
+                layer.appendChild(img);
+            }
+        }
+
+        const safeZone = 30; // % do centro
+
+        let x, y;
+        do {
+            x = Math.random() * 100;
+            y = Math.random() * 100;
+        } while (x > 50 - safeZone && x < 50 + safeZone &&
+        y > 50 - safeZone && y < 50 + safeZone);
+
+        spawnGatinhos();
 
         restartBtn.addEventListener("click", iniciarJogo);
     </script>
