@@ -32,6 +32,11 @@
             color: white;
             border-radius: 8px;
             border: 1px solid pink;
+            text-align: center;
+            vertical-align: middle;
+            align-items: center;
+            justify-content: center;
+            display: flex;
         }
 
         .catBtn:hover {
@@ -294,6 +299,12 @@
                 transform: translate(-50%, -50%) scale(1.5);
             }
         }
+
+        .scoreIcon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 
@@ -301,7 +312,8 @@
 
 
     <div id="topbar">
-        <button class="catBtn" onclick="trocarGato('clarinha')">🐱 Clarinha</button>
+        <button class="catBtn" onclick="trocarGato('clarinha')"><img src="imgs/clara_perfil.png" style="width: 30px;"
+                height="30px" alt=""> Clarinha</button>
         <button class="catBtn" onclick="trocarGato('theo')">😼 Theo</button>
         <button class="catBtn" onclick="trocarGato('francisco')">🐾 Francisco</button>
     </div>
@@ -351,7 +363,7 @@
                 costas: "imgs/gato_laranja_costas-removebg-preview.png",
                 virado: "imgs/gato_laranja_virado-removebg-preview.png",
                 bravo: "imgs/gato_laranja_bravo-removebg-preview.png",
-                icon: "🌸"
+                icon: "imgs/clara_perfil.png"
             },
             theo: {
                 costas: "imgs/gato_preto_costas-removebg-preview.png",
@@ -401,7 +413,7 @@
                 const recorde = localStorage.getItem(`recorde_${nome}`) || 0;
 
                 card.innerHTML = `
-            <h3>${gatos[nome].icon}</h3>
+            <img src= "${gatos[nome].icon}" style="width: 60px;" height="60px" >
             <p>${nome}</p>
             <small>Recorde: ${recorde}</small>
         `;
@@ -443,7 +455,7 @@
             ultimoPonto = 0;
 
             gato.src = gatos[gatoAtual].costas;
-            scoreEl.textContent = `${gatos[gatoAtual].icon} 0`;
+            scoreEl.innerHTML = `<img src="${gatos[gatoAtual].icon}" class="scoreIcon"> 0`;
             gameoverEl.style.display = "none";
 
             mao.style.opacity = 1;
@@ -477,7 +489,7 @@
 
                 if (agora - ultimoPonto > intervaloPontos) {
                     score++;
-                    scoreEl.textContent = `${gatos[gatoAtual].icon} ${score}`;
+                    scoreEl.innerHTML = `<img src="${gatos[gatoAtual].icon}" class="scoreIcon"> ${score}`;
                     ultimoPonto = agora;
 
                     criarPelo(e.clientX, e.clientY);
@@ -535,7 +547,7 @@
             }
 
             finalScoreEl.textContent = `${gatos[gatoAtual].icon} Sua pontuação: ${score}`;
-            highScoreEl.textContent = `${gatos[gatoAtual].icon} Recorde: ${recorde}`;
+            scoreEl.innerHTML = `<img src="${gatos[gatoAtual].icon}" class="scoreIcon"> Recorde: ${recorde}`;
 
             gameoverEl.style.display = "flex";
         }
