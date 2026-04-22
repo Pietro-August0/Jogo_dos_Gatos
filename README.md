@@ -44,10 +44,15 @@ Ele não nasceu só como um exercício de programação,
 mas como um presente
 
 O jogo é inspirado nos três gatinhos da minha namorada, 
-**Laura** —
-<img src="imgs/lalacGato.png" alt="Descrição" width="500" height="500">
 
 a Clarinha, o Francisco e o Theo.
+
+Minha namorada se chama Laura e ela é apaixonada pelos gatos dela
+
+**Laura** =>
+
+
+<img src="imgs/lalacGato.png" alt="Descrição" width="500" height="500">
 
 ---
 
